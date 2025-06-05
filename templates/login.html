@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    /* Paste the CSS code here */
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+    body {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Interactive Background with Rotating Dots */
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .dot::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      width: 22px;
+      height: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .dot::after {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: -12px;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .dot:hover {
+      background: rgba(255, 255, 255, 0.9);
+      transform: scale(1.8);
+      animation: rotateLogin 2s linear infinite;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+
+    .dot:hover::before {
+      border-color: rgba(255, 255, 255, 0.7);
+      transform: scale(1.5) rotate(-45deg);
+    }
+
+    .dot:hover::after {
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: scale(1.2) rotate(45deg);
+    }
+
+    @keyframes rotateLogin {
+      from {
+        transform: scale(1.8) rotate(0deg);
+      }
+
+      to {
+        transform: scale(1.8) rotate(360deg);
+      }
+    }
+
+    /* Pulsing animation for dots */
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+
+      50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+      }
+    }
+
+    .dot:nth-child(3n) {
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .dot:nth-child(3n+1) {
+      animation: pulse 5s ease-in-out infinite reverse;
+    }
+
+    .dot:nth-child(3n+2) {
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    /* Main form container */
+    .form-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 24px;
+      padding: 45px;
+      box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.1),
+        0 15px 30px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      z-index: 1;
+      transform: translateY(0);
+      transition: all 0.4s ease;
+    }
+
+    .form-container:hover {
+      transform: translateY(-8px);
+      box-shadow:
+        0 35px 70px rgba(0, 0, 0, 0.15),
+        0 20px 40px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    /* Form styling */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1a202c;
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+      position: relative;
+      letter-spacing: -0.5px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+      border-radius: 2px;
+      box-shadow: 0 2px 10px rgba(79, 172, 254, 0.3);
+    }
+
+    /* Input styling */
+    input,
+    select {
+      padding: 18px 24px;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      background: rgba(255, 255, 255, 0.9);
+      color: #1a202c;
+      transition: all 0.3s ease;
+      outline: none;
+      font-weight: 500;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #4facfe;
+      background: rgba(255, 255, 255, 1);
+      box-shadow:
+        0 0 0 4px rgba(79, 172, 254, 0.1),
+        0 4px 20px rgba(79, 172, 254, 0.15);
+      transform: translateY(-3px);
+    }
+
+    input:hover,
+    select:hover {
+      border-color: #cbd5e0;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Placeholder styling */
+    input::placeholder {
+      color: #a0aec0;
+      font-weight: 400;
+    }
+
+    /* Select styling */
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234facfe' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 16px center;
+      background-repeat: no-repeat;
+      background-size: 18px;
+      padding-right: 50px;
+    }
+
+    select option {
+      background: white;
+      color: #1a202c;
+      padding: 12px;
+      font-weight: 500;
+    }
+
+    /* Button styling */
+    button {
+      padding: 18px 24px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 6px 20px rgba(79, 172, 254, 0.4),
+        0 2px 10px rgba(0, 242, 254, 0.2);
+      letter-spacing: 0.5px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 8px 25px rgba(79, 172, 254, 0.6),
+        0 4px 15px rgba(0, 242, 254, 0.3);
+    }
+
+    button:active {
+      transform: translateY(-1px);
+      box-shadow:
+        0 4px 15px rgba(79, 172, 254, 0.5),
+        0 2px 8px rgba(0, 242, 254, 0.2);
+    }
+
+    /* Button shine effect */
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.4) 50%,
+          rgba(255, 255, 255, 0) 100%);
+      transition: left 0.8s ease;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    /* Signup link styling */
+    .signup-link {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .signup-link a {
+      color: #4facfe;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+
+    .signup-link a:hover {
+      color: #00f2fe;
+      background: rgba(79, 172, 254, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .signup-link a::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 16px;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+      transition: width 0.3s ease;
+    }
+
+    .signup-link a:hover::after {
+      width: calc(100% - 32px);
+    }
+
+    /* Form animations */
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .form-container {
+      animation: fadeInScale 0.8s ease-out;
+    }
+
+    /* Input group with floating labels */
+    .input-group {
+      position: relative;
+    }
+
+    .input-group input:focus+.input-label,
+    .input-group input:not(:placeholder-shown)+.input-label,
+    .input-group select:focus+.input-label,
+    .input-group select:not([value=""])+.input-label {
+      transform: translateY(-32px) scale(0.85);
+      color: #4facfe;
+      font-weight: 600;
+    }
+
+    .input-label {
+      position: absolute;
+      left: 24px;
+      top: 18px;
+      color: #a0aec0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      background: linear-gradient(to bottom, transparent 0%, transparent 40%, white 40%, white 60%, transparent 60%);
+      padding: 0 8px;
+      font-weight: 500;
+    }
+
+    /* Role-specific styling */
+    .role-admin {
+      border-left: 4px solid #e53e3e;
+    }
+
+    .role-founder {
+      border-left: 4px solid #38a169;
+    }
+
+    .role-investor {
+      border-left: 4px solid #3182ce;
+    }
+
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .form-container {
+        margin: 20px;
+        padding: 35px 25px;
+      }
+
+      h2 {
+        font-size: 1.9rem;
+      }
+
+      input,
+      select,
+      button {
+        padding: 15px 20px;
+        font-size: 1rem;
+      }
+
+      .input-label {
+        left: 20px;
+        top: 15px;
+      }
+    }
+
+    /* Loading state */
+    .loading {
+      position: relative;
+      pointer-events: none;
+      color: transparent;
+    }
+
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spinLogin 1s linear infinite;
+    }
+
+    @keyframes spinLogin {
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    /* Success/Error states */
+    .success {
+      border-color: #38a169 !important;
+      background-color: rgba(56, 161, 105, 0.1);
+      box-shadow: 0 0 0 4px rgba(56, 161, 105, 0.1);
+    }
+
+    .error {
+      border-color: #e53e3e !important;
+      background-color: rgba(229, 62, 62, 0.1);
+      box-shadow: 0 0 0 4px rgba(229, 62, 62, 0.1);
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-5px);
+      }
+
+      75% {
+        transform: translateX(5px);
+      }
+    }
+
+    /* Welcome message */
+    .welcome-message {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #4a5568;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    /* Security indicator */
+    .security-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <form method="POST">
+    <h2>Login</h2>
+    <input name="username" placeholder="Username" required>
+    <input name="password" type="password" placeholder="Password" required>
+    <select name="role" required>
+      <option value="">Select Role</option>
+      <option value="admin">Admin</option>
+      <option value="founder">Founder</option>
+      <option value="investor">Investor</option>
+    </select>
+    <button type="submit">Login</button>
+  </form>
+  <a href="/signup">Don't have an account? Signup</a>
+
+  <script>
+    // Interactive rotating dots background for login page (Fixed for redirection)
+document.addEventListener('DOMContentLoaded', function() {
+  createInteractiveLoginBackground();
+  enhanceLoginForm();
+  addLoginAnimations();
+});
+
+function createInteractiveLoginBackground() {
+  // Create background container
+  const backgroundContainer = document.createElement('div');
+  backgroundContainer.className = 'background-container';
+  document.body.appendChild(backgroundContainer);
+  
+  // Create dots with different sizes and behaviors
+  const dotCount = 60;
+  const dots = [];
+  
+  for (let i = 0; i < dotCount; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    
+    // Random position
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+    
+    dot.style.left = x + 'px';
+    dot.style.top = y + 'px';
+    
+    // Random size variation
+    const size = 8 + Math.random() * 6;
+    dot.style.width = size + 'px';
+    dot.style.height = size + 'px';
+    
+    // Random animation delay
+    dot.style.animationDelay = Math.random() * 6 + 's';
+    
+    // Add enhanced mouse interaction
+    dot.addEventListener('mouseenter', function() {
+      this.style.animationPlayState = 'paused';
+      this.style.background = `hsl(${200 + Math.random() * 60}, 80%, 70%)`;
+    });
+    
+    dot.addEventListener('mouseleave', function() {
+      this.style.animationPlayState = 'running';
+      setTimeout(() => {
+        this.style.background = 'rgba(255, 255, 255, 0.4)';
+      }, 500);
+    });
+    
+    // Add click ripple effect
+    dot.addEventListener('click', function(e) {
+      createRipple(e, this);
+    });
+    
+    backgroundContainer.appendChild(dot);
+    dots.push(dot);
+  }
+  
+  // Enhanced mouse move effect with magnetic attraction
+  document.addEventListener('mousemove', function(e) {
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    
+    dots.forEach((dot, index) => {
+      const dotRect = dot.getBoundingClientRect();
+      const dotX = dotRect.left + dotRect.width / 2;
+      const dotY = dotRect.top + dotRect.height / 2;
+      
+      const distance = Math.sqrt(
+        Math.pow(mouseX - dotX, 2) + Math.pow(mouseY - dotY, 2)
+      );
+      
+      // Magnetic effect - dots are attracted to mouse
+      if (distance < 150) {
+        const intensity = 1 - (distance / 150);
+        const attraction = intensity * 0.3;
+        
+        // Enhanced glow effect
+        dot.style.background = `rgba(255, 255, 255, ${0.4 + intensity * 0.6})`;
+        dot.style.boxShadow = `0 0 ${20 * intensity}px rgba(255, 255, 255, ${intensity})`;
+        
+        // Magnetic movement towards mouse
+        const moveX = (mouseX - dotX) * attraction;
+        const moveY = (mouseY - dotY) * attraction;
+        
+        dot.style.transform = `scale(${1 + intensity * 0.8}) translate(${moveX}px, ${moveY}px)`;
+        
+        // Add rotation based on position
+        const rotation = (index * 45 + intensity * 180) % 360;
+        dot.style.transform += ` rotate(${rotation}deg)`;
+      } else {
+        dot.style.background = 'rgba(255, 255, 255, 0.4)';
+        dot.style.boxShadow = 'none';
+        dot.style.transform = 'scale(1) translate(0, 0) rotate(0deg)';
+      }
+    });
+  });
+  
+  // Regenerate dots on window resize
+  window.addEventListener('resize', function() {
+    dots.forEach(dot => {
+      dot.style.left = Math.random() * window.innerWidth + 'px';
+      dot.style.top = Math.random() * window.innerHeight + 'px';
+    });
+  });
+}
+
+function createRipple(event, element) {
+  const ripple = document.createElement('div');
+  const rect = element.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  
+  ripple.style.cssText = `
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: rippleEffect 0.6s linear;
+    left: ${event.clientX - rect.left - size / 2}px;
+    top: ${event.clientY - rect.top - size / 2}px;
+    width: ${size}px;
+    height: ${size}px;
+    pointer-events: none;
+  `;
+  
+  element.appendChild(ripple);
+  
+  setTimeout(() => {
+    ripple.remove();
+  }, 600);
+}
+
+// Add ripple animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes rippleEffect {
+    to {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+`;
+document.head.appendChild(style);
+
+function enhanceLoginForm() {
+  // Wrap form in container
+  const form = document.querySelector('form');
+  const signupLink = document.querySelector('a[href="/signup"]');
+  
+  const container = document.createElement('div');
+  container.className = 'form-container';
+  
+  // Add security badge
+  const securityBadge = document.createElement('div');
+  securityBadge.className = 'security-badge';
+  securityBadge.textContent = '🔒 Secure';
+  container.appendChild(securityBadge);
+  
+  // Add welcome message
+  const welcomeMessage = document.createElement('div');
+  welcomeMessage.className = 'welcome-message';
+  welcomeMessage.textContent = 'Welcome back! Please sign in to your account.';
+  
+  // Move form and link into container
+  form.parentNode.insertBefore(container, form);
+  container.appendChild(welcomeMessage);
+  container.appendChild(form);
+  
+  if (signupLink) {
+    const linkContainer = document.createElement('div');
+    linkContainer.className = 'signup-link';
+    linkContainer.appendChild(signupLink);
+    container.appendChild(linkContainer);
+  }
+  
+  // Add form validation and enhancement
+  const inputs = form.querySelectorAll('input, select');
+  const button = form.querySelector('button');
+  const roleSelect = form.querySelector('select[name="role"]');
+  
+  // Add role-based styling
+  roleSelect.addEventListener('change', function() {
+    container.className = 'form-container';
+    if (this.value) {
+      container.classList.add(`role-${this.value}`);
+    }
+  });
+  
+  // Add input validation with enhanced feedback (but don't prevent submission)
+  inputs.forEach(input => {
+    input.addEventListener('blur', function() {
+      validateLoginInput(this);
+    });
+    
+    input.addEventListener('input', function() {
+      if (this.classList.contains('error')) {
+        this.classList.remove('error');
+        removeErrorMessage(this);
+      }
+    });
+    
+    // Add focus visual feedback
+    input.addEventListener('focus', function() {
+      this.style.transform = 'translateY(-3px) scale(1.02)';
+    });
+    
+    input.addEventListener('blur', function() {
+      if (!this.classList.contains('error')) {
+        this.style.transform = 'translateY(0) scale(1)';
+      }
+    });
+  });
+  
+  // FIXED: Only add visual feedback, don't prevent form submission
+  form.addEventListener('submit', function(e) {
+    // Validate inputs for visual feedback only
+    let hasErrors = false;
+    inputs.forEach(input => {
+      if (!validateLoginInput(input)) {
+        hasErrors = true;
+      }
+    });
+    
+    if (hasErrors) {
+      // Show visual feedback but still allow submission
+      container.style.animation = 'shake 0.5s ease-in-out';
+      setTimeout(() => {
+        container.style.animation = '';
+      }, 500);
+      // Don't prevent default - let the form submit naturally
+    } else {
+      // Add loading visual feedback
+      button.classList.add('loading');
+      button.style.pointerEvents = 'none';
+      
+      // Show role-specific loading message
+      const role = roleSelect.value;
+      const loadingMessages = {
+        admin: 'Verifying admin credentials...',
+        founder: 'Connecting to founder dashboard...',
+        investor: 'Accessing investor portal...'
+      };
+      
+      const loadingText = document.createElement('div');
+      loadingText.style.cssText = `
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #4facfe;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        font-weight: 500;
+      `;
+      loadingText.textContent = loadingMessages[role] || 'Signing you in...';
+      button.parentNode.appendChild(loadingText);
+      
+      // Let the form submit naturally - don't prevent default
+    }
+  });
+  
+  // Add floating labels effect
+  inputs.forEach(input => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'input-group';
+    
+    input.parentNode.insertBefore(wrapper, input);
+    wrapper.appendChild(input);
+    
+    const label = document.createElement('label');
+    label.className = 'input-label';
+    label.textContent = input.placeholder || input.name.charAt(0).toUpperCase() + input.name.slice(1);
+    wrapper.appendChild(label);
+    
+    input.placeholder = '';
+  });
+}
+
+function validateLoginInput(input) {
+  const value = input.value.trim();
+  
+  // Remove previous validation classes
+  input.classList.remove('error', 'success');
+  
+  // Check if required field is empty
+  if (input.hasAttribute('required') && !value) {
+    input.classList.add('error');
+    addErrorMessage(input, 'This field is required');
+    return false;
+  }
+  
+  // Validate username (basic validation only)
+  if (input.name === 'username') {
+    if (value.length < 2) {
+      input.classList.add('error');
+      addErrorMessage(input, 'Username is too short');
+      return false;
+    }
+  }
+  
+  // Validate password (basic validation only)
+  if (input.name === 'password') {
+    if (value.length < 3) {
+      input.classList.add('error');
+      addErrorMessage(input, 'Password is too short');
+      return false;
+    }
+  }
+  
+  // Validate role selection
+  if (input.name === 'role') {
+    if (!value) {
+      input.classList.add('error');
+      addErrorMessage(input, 'Please select your role');
+      return false;
+    }
+  }
+  
+  input.classList.add('success');
+  removeErrorMessage(input);
+  return true;
+}
+
+function addErrorMessage(input, message) {
+  removeErrorMessage(input);
+  
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'error-message';
+  errorDiv.style.cssText = `
+    color: #e53e3e;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    font-weight: 500;
+    animation: fadeInUp 0.3s ease;
+  `;
+  errorDiv.textContent = message;
+  
+  input.parentNode.appendChild(errorDiv);
+}
+
+function removeErrorMessage(input) {
+  const existingError = input.parentNode.querySelector('.error-message');
+  if (existingError) {
+    existingError.remove();
+  }
+}
+
+function addLoginAnimations() {
+  // Add staggered animation to form elements
+  const formElements = document.querySelectorAll('.input-group, button, .signup-link');
+  
+  formElements.forEach((element, index) => {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(20px)';
+    element.style.transition = 'all 0.5s ease';
+    
+    setTimeout(() => {
+      element.style.opacity = '1';
+      element.style.transform = 'translateY(0)';
+    }, 200 + (index * 100));
+  });
+}
+
+// REMOVED: Keyboard shortcuts that might interfere with form submission
+// Only keep non-interfering shortcuts
+document.addEventListener('keydown', function(e) {
+  // Escape to clear form
+  if (e.key === 'Escape') {
+    const inputs = document.querySelectorAll('input, select');
+    inputs.forEach(input => {
+      input.value = '';
+      input.classList.remove('error', 'success');
+    });
+    removeAllErrorMessages();
+  }
+  
+  // Tab navigation enhancement
+  if (e.key === 'Tab') {
+    const focusedElement = document.activeElement;
+    if (focusedElement.tagName === 'INPUT' || focusedElement.tagName === 'SELECT') {
+      focusedElement.style.boxShadow = '0 0 0 4px rgba(79, 172, 254, 0.2)';
+    }
+  }
+});
+
+function removeAllErrorMessages() {
+  const errorMessages = document.querySelectorAll('.error-message');
+  errorMessages.forEach(msg => msg.remove());
+}
+
+// Add fade-in animation for error messages
+const fadeInUpStyle = document.createElement('style');
+fadeInUpStyle.textContent = `
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+document.head.appendChild(fadeInUpStyle);
+
+console.log('Interactive login form loaded successfully - Form submission enabled!');
+  </script>
+</body>
+
+</html>

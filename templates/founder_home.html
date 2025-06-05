@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Founder Dashboard - {{ user }}</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      padding-top: 70px;
+    }
+    .celebration {
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+      color: #155724;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .progress {
+      height: 25px;
+    }
+    .edit-button {
+      margin-top: 15px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#">Founder OS</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="#">News</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('community') }}">Community</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://ai-0jiu.onrender.com/">Base-AI</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Resume Summary</a></li>
+        </ul>
+        <span class="navbar-text me-3">Logged in as: {{ user }}</span>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1 class="mb-4">Welcome, {{ user }}</h1>
+
+    <!-- Progress Bar -->
+    <section class="mb-4">
+      <h4>Goals Progress</h4>
+      <div class="d-flex align-items-center gap-3 mb-2">
+        <div class="progress flex-grow-1">
+          <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+        </div>
+        <div id="progress-ticker" style="min-width: 50px; font-weight: bold;">0%</div>
+      </div>
+      {% if celebration %}
+      <div class="celebration mt-3">
+        🎉 Congratulations! You have completed all your goals! 🎉
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- Projects Summary -->
+    <section class="mb-5">
+      <h3>Your Projects</h3>
+      {% if projects %}
+      <ul class="list-group">
+        {% for project in projects %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div><strong>{{ project.project_name }}</strong> — {{ project.project_desc }}</div>
+          <a href="{{ url_for('founder_edit', project_id=project.id) }}" class="btn btn-sm btn-primary">Edit</a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>You have no projects yet. <a href="{{ url_for('founder_edit') }}">Add some</a></p>
+      {% endif %}
+    </section>
+
+    <!-- Team Summary -->
+    <section class="mb-5">
+      <h3>Your Team Members</h3>
+      {% if team_members %}
+      <ul class="list-group">
+        {% for member in team_members %}
+        <li class="list-group-item"><strong>{{ member.member_name }}</strong> — {{ member.member_role }}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No team members yet. <a href="{{ url_for('founder_edit') }}">Add some</a></p>
+      {% endif %}
+    </section>
+
+    <!-- Goals Summary -->
+    <!-- Goals Summary -->
+<section class="mb-5">
+  <h3>Your Goals</h3>
+  {% if goals %}
+  <ul class="list-group">
+    {% for goal in goals %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <form method="POST" action="{{ url_for('mark_goal_complete', goal_id=goal.id) }}" class="d-flex align-items-center w-100">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="completed" onchange="this.form.submit()" {% if goal.completed %}checked{% endif %}>
+          <label class="form-check-label ms-2">
+            {% if goal.completed %}
+              <del>{{ goal.goal_desc }}</del>
+            {% else %}
+              {{ goal.goal_desc }}
+            {% endif %}
+          </label>
+        </div>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No goals yet. <a href="{{ url_for('founder_edit') }}">Add some</a></p>
+  {% endif %}
+</section>
+
+
+    <!-- Edit Button -->
+    <a href="{{ url_for('founder_edit') }}" class="btn btn-primary edit-button">Edit Details</a>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const progressBar = document.getElementById('progress-bar');
+      const ticker = document.getElementById('progress-ticker');
+      let width = 0;
+      const target = {{ progress_percent|default(0) }};
+      const interval = setInterval(() => {
+        if (width >= target) {
+          clearInterval(interval);
+        } else {
+          width++;
+          progressBar.style.width = width + '%';
+          progressBar.setAttribute('aria-valuenow', width);
+          progressBar.textContent = width + '%';
+          ticker.textContent = width + '%';
+        }
+      }, 20);
+    });
+  </script>
+</body>
+</html>

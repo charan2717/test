@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Community</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f9f9f9; }
+        h2 { color: #333; }
+        .post, .comment, .reply { border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin-bottom: 10px; background: #fff; }
+        .comment { margin-left: 20px; }
+        .reply { margin-left: 40px; }
+        .author { font-weight: bold; }
+        .small { font-size: 0.9em; color: gray; }
+        form textarea, input[type="text"] {
+            width: 100%; padding: 8px; margin-top: 6px; margin-bottom: 10px; border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        form button {
+            padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 4px;
+        }
+        form button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+<h2>Welcome to the Community, {{ user }}</h2>
+
+<!-- Create new post -->
+<div class="post">
+    <form method="POST">
+        <label for="content"><strong>Create a post:</strong></label>
+        <textarea name="content" required></textarea>
+        <button type="submit">Post</button>
+    </form>
+</div>
+
+<!-- Display all posts -->
+{% for post in posts %}
+    <div class="post">
+        <p class="author">{{ post.username }} ({{ post.role }}) <span class="small">{{ post.created_at }}</span></p>
+        <p>{{ post.content }}</p>
+
+        {% if post.username == user %}
+            <a href="{{ url_for('delete_post', post_id=post.id) }}" onclick="return confirm('Delete this post?')">Delete</a>
+        {% endif %}
+
+        <!-- Comments -->
+        {% for comment in comments_map[post.id] %}
+            <div class="comment">
+                <p class="author">{{ comment.username }} <span class="small">{{ comment.created_at }}</span></p>
+                <p>{{ comment.content }}</p>
+                {% if comment.username == user %}
+                    <a href="{{ url_for('delete_comment', comment_id=comment.id) }}" onclick="return confirm('Delete this comment?')">Delete</a>
+                {% endif %}
+
+                <!-- Replies -->
+                {% for reply in replies_map[comment.id] %}
+                    <div class="reply">
+                        <p class="author">{{ reply.username }} <span class="small">{{ reply.created_at }}</span></p>
+                        <p>{{ reply.content }}</p>
+                        {% if reply.username == user %}
+                            <a href="{{ url_for('delete_reply', reply_id=reply.id) }}" onclick="return confirm('Delete this reply?')">Delete</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <!-- Add reply -->
+                <form method="POST" action="{{ url_for('add_reply', comment_id=comment.id) }}">
+                    <input type="text" name="reply" placeholder="Write a reply..." required>
+                    <button type="submit">Reply</button>
+                </form>
+            </div>
+        {% endfor %}
+
+        <!-- Add comment -->
+        <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}">
+            <input type="text" name="comment" placeholder="Write a comment..." required>
+            <button type="submit">Comment</button>
+        </form>
+    </div>
+{% endfor %}
+
+</body>
+</html>
